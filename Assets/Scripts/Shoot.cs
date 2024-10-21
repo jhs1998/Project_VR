@@ -11,7 +11,7 @@ public class Shoot : MonoBehaviour
 
     public void Fire()
     {
-        GameObject bullet = Instantiate(bulletRerfab, firePoint.position, firePoint.rotation); ;
+        GameObject bullet = Instantiate(bulletRerfab, firePoint.position, firePoint.rotation);
         Rigidbody rigidbody = bullet.GetComponent<Rigidbody>();
         rigidbody.velocity = bullet.transform.forward * fireSpeed;
     }
