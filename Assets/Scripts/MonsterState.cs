@@ -18,8 +18,11 @@ public class MonsterState : MonoBehaviour
     public float moveSpeed;
     public float attackDamage;
     public float monsterHP;
+    public float attackRange;
+    public float attackDelay = 3;
+    public float currentTime;
 
-    [SerializeField] Transform tower;
+    Transform tower;
     // 네비게이션
     NavMeshAgent agent;
 
@@ -31,29 +34,34 @@ public class MonsterState : MonoBehaviour
                 moveSpeed = 0.8f;
                 attackDamage = 1;
                 monsterHP = 1;
+                attackRange = 1;
                 break;
             case "Orc2Lv(Clone)":
                 moveSpeed = 1;
                 attackDamage = 2;
                 monsterHP = 2;
+                attackRange = 2;
                 break;
             case "Orc3Lv(Clone)":
                 moveSpeed = 1.5f;
                 attackDamage = 4;
                 monsterHP = 3;
+                attackRange = 3;
                 break;
             case "Orc4Lv(Clone)":
                 moveSpeed = 0.5f;
                 attackDamage = 8;
                 monsterHP = 4;
+                attackRange = 4;
                 break;
             case "Orc5Lv(Clone)":
                 moveSpeed = 1.5f;
                 attackDamage = 10;
                 monsterHP = 3;
+                attackRange = 10;
                 break;
         }
-
+        tower = GameObject.Find("Tower").transform;
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = false;
         agent.speed = moveSpeed;
@@ -83,20 +91,35 @@ public class MonsterState : MonoBehaviour
 
     private void Idle()
     {
-        state = OrcState.Idle;
+        state = OrcState.Move;
         agent.enabled = true;
     }
     private void Move()
     {
         agent.SetDestination(tower.position);
+
+        if(Vector3.Distance(transform.position, tower.position) < attackRange)
+        {
+            state = OrcState.Attack;
+            agent.enabled = false;
+        }
     }
     private void Attack()
     {
+        currentTime += Time.deltaTime;
+        if (currentTime > attackRange)
+        {
+            // 공격 모션 실행 
+            // 타워에 데미지
+            currentTime = 0;
+        }
     }
     private void Damage()
     {
+        // 충돌하였다면 데미지
     }
     private void Die()
     {
+        // hp 전부 소모시 사망
     }
 }
