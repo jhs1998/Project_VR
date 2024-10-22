@@ -129,14 +129,18 @@ public class MonsterState : MonoBehaviour
         }
         // hp 감소
         monsterHP -= 1;
-        Debug.Log("몬스터 -1");
+        Debug.Log($"몬스터 {monsterHP}");
         if (monsterHP <= 0)
         {
+            Debug.Log("몬스터 사망");
             // hp 전부 소모시 사망
             state = OrcState.Die;
         }
-        state = OrcState.Idle;
-    }
+        else
+        {
+            state = OrcState.Idle;
+        }
+    }        
     private void Die()
     {
         // 사망 애니메이션 
