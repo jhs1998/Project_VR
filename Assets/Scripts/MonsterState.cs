@@ -22,6 +22,7 @@ public class MonsterState : MonoBehaviour
     public float attackDelay = 3;
     public float currentTime;
 
+    public bool getDamage = false;
     Transform tower;
     // 네비게이션
     NavMeshAgent agent;
@@ -110,16 +111,48 @@ public class MonsterState : MonoBehaviour
         if (currentTime > attackRange)
         {
             // 공격 모션 실행 
+
             // 타워에 데미지
+            tower.GetComponent<TowerScript>().GetDamage((int)attackDamage);
+
             currentTime = 0;
         }
     }
     private void Damage()
     {
-        // 충돌하였다면 데미지
+        getDamage = true;
+        
+        if (getDamage)
+        {
+            // 피격 애니메이션
+           
+        }
+        // hp 감소
+        monsterHP -= 1;
+
+        if (monsterHP <= 0)
+        {
+            // hp 전부 소모시 사망
+            state = OrcState.Die;
+        }
+        state = OrcState.Move;
     }
     private void Die()
     {
-        // hp 전부 소모시 사망
+        // 사망 애니메이션 
+
+        // 사망 사운드
+
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // 충돌한것이 불릿일때
+        if (collision.gameObject.name == "Bullet(Clone)")
+        {
+            Debug.Log("몬스터 격추");
+            state = OrcState.Damage;
+        }
     }
 }
