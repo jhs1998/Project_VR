@@ -8,9 +8,11 @@ public class Shoot : MonoBehaviour
     [SerializeField] GameObject bulletPrefab;
     [SerializeField] Transform firePoint;
     [SerializeField] float fireSpeed;
+    [SerializeField] AudioSource audioSource;
 
     public void Fire()
     {
+        audioSource = GetComponent<AudioSource>();
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         Rigidbody rigidbody = bullet.GetComponent<Rigidbody>();
         rigidbody.velocity = bullet.transform.forward * fireSpeed;
@@ -24,5 +26,11 @@ public class Shoot : MonoBehaviour
             gunRespown.DropTheGun();
             Destroy(gameObject, 5f);
         }
+    }
+
+    private void PlayDamageSound()
+    {
+        // 사운드를 재생
+        audioSource.Play();
     }
 }
