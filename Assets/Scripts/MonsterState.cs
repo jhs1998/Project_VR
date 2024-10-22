@@ -127,10 +127,10 @@ public class MonsterState : MonoBehaviour
     private void Attack()
     {
         currentTime += Time.deltaTime;
+        // 공격 모션 실행 
+        animator.Play("Attack");
         if (currentTime > attackRange)
-        {
-            // 공격 모션 실행 
-            animator.Play("Attack");
+        {          
             // 타워에 데미지
             tower.GetComponent<TowerScript>().GetDamage((int)attackDamage);
 
