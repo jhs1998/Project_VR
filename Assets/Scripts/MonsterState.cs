@@ -67,12 +67,20 @@ public class MonsterState : MonoBehaviour
         }
         tower = GameObject.Find("Tower").transform;
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
         agent.enabled = false;
         agent.speed = moveSpeed;
     }
 
     private void Update()
     {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (stateInfo.IsName("Damage") && stateInfo.normalizedTime < 1.0f)
+        {
+            return; 
+        }
+
         switch (state)
         {
             case OrcState.Idle:
@@ -95,18 +103,25 @@ public class MonsterState : MonoBehaviour
 
     private void Idle()
     {
-        state = OrcState.Move;
-        agent.enabled = true;     
+        animator.Play("Idle");
+        agent.enabled = true;
+        state = OrcState.Move;            
+        state = OrcState.Move;            
     }
     private void Move()
     {
         agent.SetDestination(tower.position);
-        animator.SetTrigger("Idle");
+        animator.Play("Walk");
 
         if (Vector3.Distance(transform.position, tower.position) < attackRange)
         {
             state = OrcState.Attack;
             agent.enabled = false;
+        }
+        
+        if (getDamage == true)
+        {
+            state = OrcState.Damage;
         }
     }
     private void Attack()
@@ -115,7 +130,7 @@ public class MonsterState : MonoBehaviour
         if (currentTime > attackRange)
         {
             // 공격 모션 실행 
-            animator.SetTrigger("Attack");
+            animator.Play("Attack");
             // 타워에 데미지
             tower.GetComponent<TowerScript>().GetDamage((int)attackDamage);
 
@@ -123,17 +138,12 @@ public class MonsterState : MonoBehaviour
         }
     }
     private void Damage()
-    {
-        getDamage = true;
-        
-        if (getDamage)
-        {
-            // 피격 애니메이션
-            animator.SetTrigger("Damage"); 
-        }
+    {                      
+        // 피격 애니메이션
+        animator.Play("Damage");        
         // hp 감소
         monsterHP -= 1;
-        Debug.Log($"몬스터 {monsterHP}");
+
         if (monsterHP <= 0)
         {            
             // hp 전부 소모시 사망
@@ -147,7 +157,7 @@ public class MonsterState : MonoBehaviour
     private void Die()
     {
         // 사망 애니메이션 
-        animator.SetTrigger("Death - A"); 
+        animator.Play("Death-A"); 
         // 사망 사운드
 
         Destroy(gameObject, 2f);
@@ -158,8 +168,7 @@ public class MonsterState : MonoBehaviour
         // 충돌한것이 불릿일때
         if (collision.gameObject.name == "Bullet(Clone)")
         {
-            Debug.Log("몬스터 격추");
-            state = OrcState.Damage;
+            getDamage = true;
         }
     }
 }

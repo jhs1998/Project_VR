@@ -6,6 +6,13 @@ public class BulletScript : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject, 5f);
+        if (collision.gameObject.tag == "Monster")
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject, 5f);
+        }      
     }
 }

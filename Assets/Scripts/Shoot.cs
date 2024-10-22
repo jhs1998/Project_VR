@@ -16,6 +16,7 @@ public class Shoot : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         Rigidbody rigidbody = bullet.GetComponent<Rigidbody>();
         rigidbody.velocity = bullet.transform.forward * fireSpeed;
+        PlayDamageSound();
     }
 
     private void OnCollisionEnter(Collision collision)
